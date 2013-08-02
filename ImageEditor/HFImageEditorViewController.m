@@ -10,13 +10,13 @@ static const NSTimeInterval kAnimationIntervalReset = 0.25;
 static const NSTimeInterval kAnimationIntervalTransform = 0.2;
 
 @interface HFImageEditorViewController ()
-@property (nonatomic,retain) UIImageView *imageView;
+@property (nonatomic,strong) UIImageView *imageView;
 @property (nonatomic,assign) CGRect cropRect;
-@property (retain, nonatomic) IBOutlet UIPanGestureRecognizer *panRecognizer;
-@property (retain, nonatomic) IBOutlet UIRotationGestureRecognizer *rotationRecognizer;
-@property (retain, nonatomic) IBOutlet UIPinchGestureRecognizer *pinchRecognizer;
-@property (retain, nonatomic) IBOutlet UITapGestureRecognizer *tapRecognizer;
-@property (nonatomic,retain) IBOutlet UIView<HFImageEditorFrame> *frameView;
+@property (strong, nonatomic) IBOutlet UIPanGestureRecognizer *panRecognizer;
+@property (strong, nonatomic) IBOutlet UIRotationGestureRecognizer *rotationRecognizer;
+@property (strong, nonatomic) IBOutlet UIPinchGestureRecognizer *pinchRecognizer;
+@property (strong, nonatomic) IBOutlet UITapGestureRecognizer *tapRecognizer;
+@property (nonatomic,strong) IBOutlet UIView<HFImageEditorFrame> *frameView;
 
 
 @property(nonatomic,assign) NSUInteger gestureCount;
@@ -68,20 +68,6 @@ static const NSTimeInterval kAnimationIntervalTransform = 0.2;
     return self;
 }
 
-- (void) dealloc
-{
-
-    [_imageView release];
-    [_frameView release];
-    [_doneCallback release];
-    [_sourceImage release];
-    [_previewImage release];
-    [_panRecognizer release];
-    [_rotationRecognizer release];
-    [_pinchRecognizer release];
-    [_tapRecognizer release];
-    [super dealloc];
-}
 
 #pragma mark Properties
 
@@ -110,9 +96,9 @@ static const NSTimeInterval kAnimationIntervalTransform = 0.2;
             } else { // landscape
                 size = CGSizeMake(kPreviewImageSize,kPreviewImageSize*aspect);
             }
-            _previewImage = [[self scaledImage:self.sourceImage  toSize:size withQuality:kCGInterpolationLow] retain];
+            _previewImage = [self scaledImage:self.sourceImage  toSize:size withQuality:kCGInterpolationLow];
         } else {
-            _previewImage = [_sourceImage retain];
+            _previewImage = _sourceImage;
         }
     }
     return  _previewImage;
@@ -121,8 +107,7 @@ static const NSTimeInterval kAnimationIntervalTransform = 0.2;
 - (void)setSourceImage:(UIImage *)sourceImage
 {
     if(sourceImage != _sourceImage) {
-        [_sourceImage release];
-        _sourceImage = [sourceImage retain];
+        _sourceImage = sourceImage;
         self.previewImage = nil;
     }
 }
@@ -226,7 +211,6 @@ static const NSTimeInterval kAnimationIntervalTransform = 0.2;
     UIImageView *imageView = [[UIImageView alloc] init];
     [self.view insertSubview:imageView belowSubview:self.frameView];
     self.imageView = imageView;
-    [imageView release];
     
     [self.view setMultipleTouchEnabled:YES];
 
